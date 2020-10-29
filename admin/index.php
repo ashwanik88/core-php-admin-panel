@@ -5,22 +5,47 @@ require_once('include/startup.php');
 // print_r($_SESSION);
 // die;
 
+$username = '';
+$password = '';
+$remember = '';
+
+function validateUser($conn, $username, $password){
+	$sql = "SELECT * FROM `manage_user` WHERE username='". $username ."' AND password='". md5($password) ."'";
+	
+	$rs = mysqli_query($conn, $sql);
+	if(mysqli_num_rows($rs) > 0){
+		$_SESSION['user'] = mysqli_fetch_assoc($rs);
+		
+		if(isset($_POST['remember']) && !empty($_POST['remember'])){
+			setcookie('username', $username, time() + (3600 * 24 * 30), '/'); // expire after 1 month
+			setcookie('password', $password, time() + (3600 * 24 * 30), '/');
+		}
+		
+		addAlert('success', 'Successfully logged in!');
+		redirect('dashboard.php');
+		
+	}else{	// wrong password
+		addAlert('danger', 'Wrong password!');
+		redirect('index.php');
+	}	
+}
+
+if(isset($_COOKIE['username']) && !empty($_COOKIE['username']) && isset($_COOKIE['password']) && !empty($_COOKIE['password'])){
+	$username = $_COOKIE['username'];
+	$password = $_COOKIE['password'];
+	$remember = 'on';
+	
+	validateUser($conn, $username, $password);
+}
+
+
 if($_POST){
 	if(isset($_POST['username']) && !empty($_POST['username']) && isset($_POST['password']) && !empty($_POST['password'])){
 		$username = $_POST['username'];
 		$password = $_POST['password'];
-		$sql = "SELECT * FROM `manage_user` WHERE username='". $_POST['username'] ."' AND password='". md5($_POST['password']) ."'";
 		
-		$rs = mysqli_query($conn, $sql);
-		if(mysqli_num_rows($rs) > 0){
-			$_SESSION['user'] = mysqli_fetch_assoc($rs);
-			addAlert('success', 'Successfully logged in!');
-			redirect('dashboard.php');
-			
-		}else{	// wrong password
-			addAlert('danger', 'Wrong password!');
-			redirect('index.php');
-		}
+		validateUser($conn, $username, $password);
+
 	}
 }
 ?>
@@ -67,14 +92,14 @@ if($_POST){
 				  <?php showAlert(); ?>
                   <form method="POST" action="" class="user">
                     <div class="form-group">
-                      <input type="text" name="username" class="form-control form-control-user" id="username" aria-describedby="emailHelp" placeholder="Enter Username" required>
+                      <input type="text" name="username" class="form-control form-control-user" id="username" aria-describedby="emailHelp" placeholder="Enter Username" required value="<?php echo $username; ?>">
                     </div>
                     <div class="form-group">
-                      <input type="password" name="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password"  required>
+                      <input type="password" name="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password"  required value="<?php echo $password; ?>">
                     </div>
                     <div class="form-group">
                       <div class="custom-control custom-checkbox small">
-                        <input type="checkbox" class="custom-control-input" id="customCheck">
+                        <input type="checkbox" class="custom-control-input" id="customCheck" name="remember" <?php echo ($remember == 'on')?'checked="checked"':''; ?>>
                         <label class="custom-control-label" for="customCheck">Remember Me</label>
                       </div>
                     </div>
