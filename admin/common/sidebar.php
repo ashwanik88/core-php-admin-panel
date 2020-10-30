@@ -14,9 +14,15 @@
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item active">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="dashboard.php">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard</span></a>
+      </li>
+	  
+	  <li class="nav-item active">
+        <a class="nav-link" href="manage_users.php">
+          <i class="fas fa-fw fa-users"></i>
+          <span>Manage users</span></a>
       </li>
 
       <!-- Divider -->
