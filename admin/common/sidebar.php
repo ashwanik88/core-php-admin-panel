@@ -19,10 +19,16 @@
           <span>Dashboard</span></a>
       </li>
 	  
-	  <li class="nav-item active">
+	  <li class="nav-item">
         <a class="nav-link" href="manage_users.php">
           <i class="fas fa-fw fa-users"></i>
           <span>Manage users</span></a>
+      </li>
+	  
+	  <li class="nav-item">
+        <a class="nav-link" href="manage_students.php">
+          <i class="fas fa-fw fa-users"></i>
+          <span>Manage Students</span></a>
       </li>
 
       <!-- Divider -->
