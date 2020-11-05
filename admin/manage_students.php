@@ -1,5 +1,19 @@
 <?php require_once('include/startup.php'); 
 checkLogIn();
+
+$sql = "SELECT * FROM manage_student";
+
+$order = '';
+
+if(isset($_GET['sort']) && !empty($_GET['sort']) && isset($_GET['order']) && !empty($_GET['order'])){
+	$sort = $_GET['sort'];
+	$order = $_GET['order'];
+	$sql .= " ORDER BY ". $sort ." " . $order;
+}
+echo $sql;
+
+$rs = mysqli_query($conn, $sql);
+
 ?>
 <?php require_once('common/header.php'); ?>
         <!-- Begin Page Content -->
@@ -19,22 +33,21 @@ checkLogIn();
             </div>
             <div class="card-body">
               <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" width="100%" cellspacing="0">
                   <thead>
                     <tr>
                       <th><input type="checkbox" /></th>
-                      <th>Student ID</th>
-                      <th>Name</th>
-                      <th>Roll No.</th>
-                      <th>Status</th>
-                      <th>Date Added</th>
-                      <th>Action</th>
+                      <th><a href="manage_students.php?sort=student_id&order=<?php echo ($order == 'ASC')?'DESC':'ASC'; ?>">Student ID</a></th>
+                      <th><a href="manage_students.php?sort=student_name&order=<?php echo ($order == 'ASC')?'DESC':'ASC'; ?>">Name</a></th>
+                      <th><a href="manage_students.php?sort=roll_number&order=<?php echo ($order == 'ASC')?'DESC':'ASC'; ?>">Roll No</a></th>
+                      <th><a href="manage_students.php?sort=status&order=<?php echo ($order == 'ASC')?'DESC':'ASC'; ?>">Status</a></th>
+                      <th><a href="manage_students.php?sort=date_added&order=<?php echo ($order == 'ASC')?'DESC':'ASC'; ?>">Date Added</a></th>
+					  <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
 				  <?php
-					$sql = "SELECT * FROM manage_student";
-					$rs = mysqli_query($conn, $sql);
+					
 					
 					if(mysqli_num_rows($rs)){
 						while($rec = mysqli_fetch_assoc($rs)){
