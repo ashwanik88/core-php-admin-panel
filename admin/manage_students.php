@@ -1,6 +1,14 @@
 <?php require_once('include/startup.php'); 
 checkLogIn();
 
+if($_POST){
+	echo '<pre>';
+	print_r($_POST);
+	die;
+}
+
+
+
 $sql = "SELECT * FROM manage_student";
 
 $order = '';
@@ -10,7 +18,7 @@ if(isset($_GET['sort']) && !empty($_GET['sort']) && isset($_GET['order']) && !em
 	$order = $_GET['order'];
 	$sql .= " ORDER BY ". $sort ." " . $order;
 }
-echo $sql;
+// echo $sql;
 
 $rs = mysqli_query($conn, $sql);
 
@@ -18,11 +26,14 @@ $rs = mysqli_query($conn, $sql);
 <?php require_once('common/header.php'); ?>
         <!-- Begin Page Content -->
         <div class="container-fluid">
-
+		<form action="" method="POST">
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Manage Students</h1>
-            <a href="form-user.php" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Add New User</a>
+			<div class="float-right">
+				<input type="submit" value="Delete" class="btn btn-sm btn-danger shadow-sm" onclick="return confirm('Are you sure want to delete this?')" />
+				<a href="form-user.php" class="btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Add New User</a>
+			</div>
           </div>
 			
 			
@@ -36,7 +47,7 @@ $rs = mysqli_query($conn, $sql);
                 <table class="table table-bordered" width="100%" cellspacing="0">
                   <thead>
                     <tr>
-                      <th><input type="checkbox" /></th>
+                      <th><input type="checkbox" onclick="($(this).is(':checked'))?$('.chk').attr('checked', true):$('.chk').attr('checked', false);" /></th>
                       <th><a href="manage_students.php?sort=student_id&order=<?php echo ($order == 'ASC')?'DESC':'ASC'; ?>">Student ID</a></th>
                       <th><a href="manage_students.php?sort=student_name&order=<?php echo ($order == 'ASC')?'DESC':'ASC'; ?>">Name</a></th>
                       <th><a href="manage_students.php?sort=roll_number&order=<?php echo ($order == 'ASC')?'DESC':'ASC'; ?>">Roll No</a></th>
@@ -54,7 +65,7 @@ $rs = mysqli_query($conn, $sql);
 							?>
 							
                     <tr>
-                      <td><input type="checkbox" /></td>
+                      <td><input type="checkbox" name="student_id[]" class="chk" value="<?php echo $rec['student_id']; ?>" /></td>
                       <td><?php echo $rec['student_id']; ?></td>
                       <td><?php echo $rec['student_name']; ?></td>
                       <td><?php echo $rec['roll_number']; ?></td>
@@ -76,7 +87,7 @@ $rs = mysqli_query($conn, $sql);
 
 
 
-       
+		</form>
         </div>
         <!-- /.container-fluid -->
 
